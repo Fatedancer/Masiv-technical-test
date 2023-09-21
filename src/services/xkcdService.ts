@@ -1,15 +1,27 @@
 import axios from "axios";
 
-export const xkcdAPI = () => {
-  // Create an instance of Axios with specific configurations
-  const instance = axios.create({
-    baseURL: "http://localhost:8080/https://xkcd.com",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+const xkcdAPI = axios.create({
+  baseURL: "http://localhost:8080/https://xkcd.com",
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+});
 
-  // Return the configured instance
-  return instance;
+export const fetchComic = async (id: number) => {
+  try {
+    const response = await xkcdAPI.get(`/${id}/info.0.json`);
+    return response.data;
+  } catch (error) {
+    console.error({ error });
+  }
+};
+
+export const fetchRandomComic = async () => {
+  try {
+    const response = await xkcdAPI.get("/info.0.json");
+    return response.data;
+  } catch (error) {
+    console.error({ error });
+  }
 };

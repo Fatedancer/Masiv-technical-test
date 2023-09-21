@@ -1,15 +1,15 @@
 <template>
-  <div>
+  <main>
     <h1>Comic Viewer</h1>
     <ComicDetail :comic="currentComic" />
     <div v-if="loading">Cargando...</div>
     <div v-if="error">Error: {{ error }}</div>
-    <div v-if="!loading && !error">
+    <nav v-if="!loading && !error">
       <button @click="getPreviousPage">Anterior</button>
-      <button @click="updateComicRating(5)">Calificar</button>
+      <button @click="handleComicRating(5)">Calificar</button>
       <button @click="getNextPage">Siguiente</button>
-    </div>
-  </div>
+    </nav>
+  </main>
 </template>
 
 <script lang="ts">
@@ -26,21 +26,26 @@ export default {
       loading,
       error,
       updateComicRating,
-      fetchRandomComic,
+      fetchRandomComicData,
       currentComic,
       getNextPage,
       getPreviousPage,
     } = useComicStore();
 
     onMounted(() => {
-      fetchRandomComic(); // Cargar un cómic aleatorio al montar el componente
+      fetchRandomComicData();
     });
+
+    const handleComicRating = (rating: number) => {
+      console.log(`Usuario calificó el cómic con ${rating} estrellas`);
+      updateComicRating(rating);
+    };
 
     return {
       currentComic,
       loading,
       error,
-      updateComicRating,
+      handleComicRating,
       getNextPage,
       getPreviousPage,
     };

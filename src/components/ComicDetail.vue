@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div>
+  <article>
+    <section>
       <h2>{{ comic?.title }}</h2>
       <img :src="comic?.img" :alt="comic?.alt" />
-    </div>
-  </div>
+    </section>
+  </article>
 </template>
 
 <script lang="ts">

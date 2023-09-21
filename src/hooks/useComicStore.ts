@@ -1,32 +1,32 @@
 import { ref, computed } from "vue";
 import store from "@/store";
-import { xkcdAPI } from "@/services/xkcdService";
+import { fetchComic, fetchRandomComic } from "@/services/xkcdService";
 
 const loading = ref(false);
 const error = ref<string | null>(null);
 
 const useComicStore = () => {
-  const fetchComic = async (id: number) => {
+  const fetchComicById = async (id: number) => {
     loading.value = true;
     try {
-      const response = await xkcdAPI().get(`/${id}/info.0.json`);
-      store.commit("setComic", response.data);
+      const comicData = await fetchComic(id);
+      store.commit("setComic", comicData);
       error.value = null;
-    } catch (err: any) {
-      error.value = err.message;
+    } catch (error) {
+      console.error({ error });
     } finally {
       loading.value = false;
     }
   };
 
-  const fetchRandomComic = async () => {
+  const fetchRandomComicData = async () => {
     loading.value = true;
     try {
-      const response = await xkcdAPI().get("/info.0.json");
-      store.commit("setComic", response.data);
+      const comicData = await fetchRandomComic();
+      store.commit("setComic", comicData);
       error.value = null;
-    } catch (err: any) {
-      error.value = err.message;
+    } catch (error) {
+      console.error({ error });
     } finally {
       loading.value = false;
     }
@@ -35,13 +35,13 @@ const useComicStore = () => {
   const getNextPage = () => {
     const currentComic = store.getters.currentComic;
     const nextComicId = currentComic.num + 1;
-    fetchComic(nextComicId);
+    fetchComicById(nextComicId);
   };
 
   const getPreviousPage = () => {
     const currentComic = store.getters.currentComic;
     const previousComicId = currentComic.num - 1;
-    fetchComic(previousComicId);
+    fetchComicById(previousComicId);
   };
 
   const currentComic = computed(() => {
@@ -55,8 +55,8 @@ const useComicStore = () => {
   return {
     loading,
     error,
-    fetchComic,
-    fetchRandomComic,
+    fetchComicById,
+    fetchRandomComicData,
     getNextPage,
     getPreviousPage,
     currentComic,

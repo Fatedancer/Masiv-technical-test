@@ -1,0 +1,2 @@
+# Masiv
+ Comic Rating app

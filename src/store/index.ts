@@ -1,25 +1,17 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { Comic } from "@/types/types";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    currentComic: {
-      title: "",
-      img: "",
-      alt: "",
-      year: "",
-      month: "",
-      day: "",
-      num: 0,
-      rating: 0,
-    },
+    currentComic: {} as Comic,
     isLoading: false,
     isError: false,
   },
   mutations: {
-    setComic(state, comicData) {
+    setComic(state, comicData: Comic) {
       state.currentComic = comicData;
     },
     setRating(state, rating) {

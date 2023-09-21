@@ -1,26 +1,29 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { Comic } from "@/types/types";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    currentComic: {
-      title: "",
-      img: "",
-      alt: "",
-      year: "",
-      month: "",
-      day: "",
-      num: 0,
-      rating: 0,
-    },
+    loadedComics: [] as Comic[],
+    currentComic: {} as Comic,
     isLoading: false,
     isError: false,
   },
   mutations: {
-    setComic(state, comicData) {
-      state.currentComic = comicData;
+    setComic(
+      state: {
+        isLoading: boolean;
+        isError: boolean;
+        loadedComics: Comic[];
+        currentComic: Comic;
+      },
+      { comicData, rating }: { comicData: Comic; rating: number }
+    ) {
+      const comicWithRating = { ...comicData, rating };
+      state.loadedComics.push(comicWithRating);
+      state.currentComic = comicWithRating;
     },
     setRating(state, rating) {
       state.currentComic.rating = rating;
@@ -39,7 +42,9 @@ export default new Vuex.Store({
   },
   getters: {
     currentComic(state) {
-      return state.currentComic;
+      return (
+        state.currentComic || state.loadedComics[state.loadedComics.length - 1]
+      );
     },
     isLoading(state) {
       return state.isLoading;

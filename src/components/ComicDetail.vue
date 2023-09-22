@@ -35,9 +35,10 @@ import { Comic } from "../types/types";
 export default defineComponent({
   props: {
     comic: Object as () => Comic,
+    currentRating: Number,
   },
   setup(props, { emit }) {
-    const userRating = ref(1);
+    const userRating = ref(props.currentRating || 1);
 
     const rateComic = () => {
       if (props.comic) {

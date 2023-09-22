@@ -1,7 +1,5 @@
-// hooks/useComicStore.ts
-
 import { ref, computed } from "vue";
-import store from "@/store"; // Asegúrate de importar el store correctamente
+import store from "@/store";
 import { fetchComic, fetchRandomComic } from "@/services/xkcdService";
 import { Comic } from "@/types/types";
 
@@ -13,11 +11,11 @@ const useComicStore = () => {
     loading.value = true;
     try {
       const comicData: Comic = await fetchComic(id);
-      store.commit("setComic", comicData);
+      store.dispatch("fetchAndSetComic", comicData);
       error.value = null;
     } catch (e) {
       console.error(e);
-      error.value = "Error al cargar el cómic";
+      error.value = "Failed to load the comic";
     } finally {
       loading.value = false;
     }
@@ -27,11 +25,11 @@ const useComicStore = () => {
     loading.value = true;
     try {
       const comicData: Comic = await fetchRandomComic();
-      store.commit("setComic", comicData);
+      store.dispatch("fetchAndSetComic", comicData);
       error.value = null;
     } catch (e) {
       console.error(e);
-      error.value = "Error al cargar el cómic aleatorio";
+      error.value = "Failed to load the comic";
     } finally {
       loading.value = false;
     }
@@ -53,9 +51,17 @@ const useComicStore = () => {
     return store.state.currentComic;
   });
 
+  const isLoading = computed(() => {
+    return loading.value;
+  });
+
+  const isError = computed(() => {
+    return error.value !== null;
+  });
+
   return {
-    loading,
-    error,
+    isLoading,
+    isError,
     fetchComicById,
     fetchRandomComicData,
     getNextPage,

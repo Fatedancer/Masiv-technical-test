@@ -2,21 +2,27 @@
   <main class="comic-viewer">
     <h1 class="page-title">Comic Viewer</h1>
     <div class="comic-detail-container">
-      <ComicDetail :comic="currentComic" />
+      <ComicDetail
+        :comic="currentComic"
+        :currentRating="currentComicRating"
+        @update:comic="updateComic"
+      />
     </div>
-    <div v-if="loading" class="loading">Cargando...</div>
-    <div v-if="error" class="error">Error: {{ error }}</div>
-    <nav v-if="!loading && !error" class="nav-buttons">
-      <button @click="getPreviousPage" class="nav-button">Anterior</button>
-      <button @click="getNextPage" class="nav-button">Siguiente</button>
+    <div v-if="isLoading" class="loading">Loading...</div>
+    <div v-if="isError" class="error">Error</div>
+    <nav v-if="!isLoading && !isError" class="nav-buttons">
+      <button @click="getPreviousPage" class="nav-button">Previous</button>
+      <button @click="getNextPage" class="nav-button">Next</button>
     </nav>
   </main>
 </template>
 
 <script lang="ts">
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
+import store from "@/store"; // Import your Vuex store
 import useComicStore from "@/hooks/useComicStore";
 import ComicDetail from "@/components/ComicDetail.vue";
+import { Comic } from "../types/types";
 
 export default {
   components: {
@@ -24,28 +30,38 @@ export default {
   },
   setup() {
     const {
-      loading,
-      error,
+      isLoading,
+      isError,
       fetchRandomComicData,
+      fetchComicById,
       currentComic,
       getNextPage,
       getPreviousPage,
     } = useComicStore();
 
-    onMounted(() => {
-      fetchRandomComicData();
+    onMounted(fetchRandomComicData);
+
+    const currentComicRating = computed(() => {
+      return store.getters.getCurrentComicRating;
     });
+
+    const updateComic = (updatedComic: Comic) => {
+      fetchComicById(updatedComic.num);
+    };
 
     return {
       currentComic,
-      loading,
-      error,
+      isLoading,
+      isError,
       getNextPage,
       getPreviousPage,
+      updateComic,
+      currentComicRating,
     };
   },
 };
 </script>
+
 <style lang="less" scoped>
 .comic-viewer {
   text-align: center;
@@ -65,15 +81,12 @@ export default {
   margin-top: 20px;
 }
 
-.loading {
+.loading .error {
   margin-top: 20px;
   font-size: 18px;
-  color: #777;
 }
 
 .error {
-  margin-top: 20px;
-  font-size: 18px;
   color: #ff0000;
 }
 
@@ -84,6 +97,7 @@ export default {
 .nav-button {
   padding: 10px 20px;
   margin: 0 10px;
+  width: 100px;
   background-color: #007aff;
   color: #fff;
   border: none;

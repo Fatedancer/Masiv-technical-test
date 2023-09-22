@@ -1,43 +1,41 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { Comic } from "@/types/types";
+import { Comic, State } from "@/types/types";
 
 Vue.use(Vuex);
 
+const state: State = {
+  comics: [],
+  currentComic: {} as Comic,
+  isLoading: false,
+  isError: false,
+};
+
+const mutations = {
+  setComic(state: State, comicData: Comic) {
+    state.currentComic = comicData;
+  },
+  setRating(
+    state: State,
+    { comicId, rating }: { comicId: number; rating: number }
+  ) {
+    const comic = state.comics.find((c) => c.num === comicId);
+    if (comic) {
+      comic.rating = rating;
+      localStorage.setItem(`comicRating_${comicId}`, rating.toString());
+    }
+  },
+};
+
+const actions = {};
+
+const getters = {
+  currentComic: (state: State) => state.currentComic,
+};
+
 export default new Vuex.Store({
-  state: {
-    currentComic: {} as Comic,
-    isLoading: false,
-    isError: false,
-  },
-  mutations: {
-    setComic(state, comicData: Comic) {
-      state.currentComic = comicData;
-    },
-    setRating(state, rating) {
-      state.currentComic.rating = rating;
-    },
-    setLoading(state, value) {
-      state.isLoading = value;
-    },
-    setError(state, value) {
-      state.isError = value;
-    },
-  },
-  actions: {
-    updateComicRating({ commit }, rating) {
-      commit("setRating", rating);
-    },
-  },
-  getters: {
-    currentComic(state) {
-      return state.currentComic;
-    },
-    isLoading(state) {
-      return state.isLoading;
-    },
-    isError(state) {
-      return state.isError;
-    },
-  },
+  state,
+  mutations,
+  actions,
+  getters,
 });

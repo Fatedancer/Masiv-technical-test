@@ -1,5 +1,7 @@
+// hooks/useComicStore.ts
+
 import { ref, computed } from "vue";
-import store from "@/store";
+import store from "@/store"; // Asegúrate de importar el store correctamente
 import { fetchComic, fetchRandomComic } from "@/services/xkcdService";
 import { Comic } from "@/types/types";
 
@@ -13,8 +15,9 @@ const useComicStore = () => {
       const comicData: Comic = await fetchComic(id);
       store.commit("setComic", comicData);
       error.value = null;
-    } catch (error) {
-      console.error({ error });
+    } catch (e) {
+      console.error(e);
+      error.value = "Error al cargar el cómic";
     } finally {
       loading.value = false;
     }
@@ -26,32 +29,29 @@ const useComicStore = () => {
       const comicData: Comic = await fetchRandomComic();
       store.commit("setComic", comicData);
       error.value = null;
-    } catch (error) {
-      console.error({ error });
+    } catch (e) {
+      console.error(e);
+      error.value = "Error al cargar el cómic aleatorio";
     } finally {
       loading.value = false;
     }
   };
 
   const getNextPage = () => {
-    const currentComic = store.getters.currentComic;
+    const currentComic: Comic = store.state.currentComic;
     const nextComicId = currentComic.num + 1;
     fetchComicById(nextComicId);
   };
 
   const getPreviousPage = () => {
-    const currentComic = store.getters.currentComic;
+    const currentComic: Comic = store.state.currentComic;
     const previousComicId = currentComic.num - 1;
     fetchComicById(previousComicId);
   };
 
   const currentComic = computed(() => {
-    return store.getters.currentComic;
+    return store.state.currentComic;
   });
-
-  const updateComicRating = (rating: number) => {
-    store.commit("setRating", rating);
-  };
 
   return {
     loading,
@@ -61,7 +61,6 @@ const useComicStore = () => {
     getNextPage,
     getPreviousPage,
     currentComic,
-    updateComicRating,
   };
 };
 

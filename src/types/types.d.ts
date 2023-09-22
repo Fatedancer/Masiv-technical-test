@@ -12,6 +12,12 @@ export interface Comic {
   day: string;
   rating?: number;
 }
+export interface State {
+  comics: Comic[];
+  currentComic: Comic;
+  isLoading: boolean;
+  isError: boolean;
+}
 
 declare module "*.vue" {
   import Vue from "vue";

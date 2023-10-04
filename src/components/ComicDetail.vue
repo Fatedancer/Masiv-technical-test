@@ -29,48 +29,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { Comic } from "../types/types";
+import { defineComponent, ref } from 'vue'
+import { Comic } from '../types/types'
 
 export default defineComponent({
   props: {
     comic: Object as () => Comic,
-    currentRating: Number,
+    currentRating: Number
   },
   setup(props, { emit }) {
-    const userRating = ref(props.currentRating || 1);
+    const userRating = ref(props.currentRating || 1)
 
     const rateComic = () => {
       if (props.comic) {
-        const comicCopy = { ...props.comic };
-        comicCopy.rating = userRating.value;
-        emit("update:comic", comicCopy);
+        const comicCopy = { ...props.comic }
+        comicCopy.rating = userRating.value
+        emit('update:comic', comicCopy)
       }
-    };
+    }
 
     const formatDate = (comic: Comic) => {
       if (comic.year && comic.month && comic.day) {
-        const date = new Date(
-          Number(comic.year),
-          Number(comic.month) - 1,
-          Number(comic.day)
-        );
-        return date.toLocaleDateString("en-EN", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+        const date = new Date(Number(comic.year), Number(comic.month) - 1, Number(comic.day))
+        return date.toLocaleDateString('en-EN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
       }
-      return "N/A";
-    };
+      return 'N/A'
+    }
 
     return {
       formatDate,
       userRating,
-      rateComic,
-    };
-  },
-});
+      rateComic
+    }
+  }
+})
 </script>
 
 <style lang="less" scoped>

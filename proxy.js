@@ -1,12 +1,12 @@
-const cors_proxy = require("cors-anywhere");
+const cors_proxy = require('cors-anywhere')
 
-const host = "localhost";
-const port = 8080;
+const host = 'localhost'
+const port = 8080
 
 cors_proxy
   .createServer({
-    originWhitelist: [], // Allow all origins
+    originWhitelist: []
   })
   .listen(port, host, () => {
-    console.log(`Proxy running on http://${host}:${port}`);
-  });
+    console.log(`Proxy running on http://${host}:${port}`)
+  })
